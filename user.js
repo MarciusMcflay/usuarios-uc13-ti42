@@ -1,9 +1,5 @@
 const express = require('express')
-const app = express()
-app.use( express.json() )
-
-
-/** Daqui pra cima só quando eu ensinar */
+const router = express.Router()
 
 var vusers = []
 
@@ -24,7 +20,7 @@ function create_user(req, res) {
         db: vusers
     })
 }
-app.post('/user', create_user)
+router.post('/create', create_user)
 
 function read_user(req, res) {
     return res.status(201).json({
@@ -32,18 +28,7 @@ function read_user(req, res) {
         db: vusers.filter(u => u.deletedAt == null)
     })
 }
-app.get('/user', read_user)
-
-function filter(vetor){
-    novo = []
-    for(let i=0; i<vetor.length; i++){
-        if(vetor[i].deletedAt == null){
-            novo.push(vetor[i])
-        }
-    }
-    return novo
-}
-
+router.get('/read', read_user)
 
 function show_user(req, res) {
     let {id} = req.params
@@ -62,7 +47,7 @@ function show_user(req, res) {
         db: vusers[idx]
     })
 }
-app.get('/user/:id', show_user)
+router.get('/show/:id', show_user)
 
 function update_user(req, res) {
     let {id} = req.params
@@ -87,7 +72,7 @@ function update_user(req, res) {
         db: vusers[idx]
     })
 }
-app.put('/user/:id', update_user)
+router.put('/update/:id', update_user)
 
 function delete_user(req, res){
     let {id} = req.params
@@ -104,12 +89,6 @@ function delete_user(req, res){
         message: "Não encontrado"
     })
 }
-app.delete('/user/:id', delete_user)
+router.delete('/delete/:id', delete_user)
 
-
-/** aqui pra baixo não é pra ter nada */
-
-
-app.listen(3000, () => {
-    console.log('http://localhost:3000')
-})
+module.exports = router
